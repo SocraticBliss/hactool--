@@ -102,7 +102,7 @@ namespace hactool__
             "hactool.exe {0} {1} --section0dir={2}\\Code --section1dir={3}\\Data --section2dir={4}\\Logo {5} {6} {7} {8}",
             keyFile, titleKey, folderName, folderName, folderName, plaintextOutput, headerOutput, onlyUpdatedOutput, fileLocation);
 
-            MessageBox.Show(command);
+            //MessageBox.Show(command);
             ExecuteCommand("cmd.exe", "/C " + command);
 
             /* Gotta build a hactool.exe with the latest patches... sigh
