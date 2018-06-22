@@ -120,7 +120,6 @@ namespace hactool__
             this.OutputOptionsLabel.Size = new System.Drawing.Size(93, 13);
             this.OutputOptionsLabel.TabIndex = 19;
             this.OutputOptionsLabel.Text = "Output Options:";
-            this.OutputOptionsLabel.Visible = false;
             // 
             // Start
             // 
@@ -161,7 +160,6 @@ namespace hactool__
             // openKeyManager
             // 
             this.openKeyManager.DefaultExt = "keys";
-            this.openKeyManager.FileName = "prod.keys";
             this.openKeyManager.Filter = "Keys File (*.keys)|*.keys|All Files (*.*)|*.*";
             this.openKeyManager.InitialDirectory = ".";
             this.openKeyManager.Title = "Select a Keys File...";
@@ -177,7 +175,6 @@ namespace hactool__
             this.Plaintext.TabIndex = 30;
             this.Plaintext.Text = "Plaintext File";
             this.Plaintext.UseVisualStyleBackColor = true;
-            this.Plaintext.Visible = false;
             this.Plaintext.Click += new System.EventHandler(this.Plaintext_Click);
             // 
             // Header
@@ -191,7 +188,6 @@ namespace hactool__
             this.Header.TabIndex = 31;
             this.Header.Text = "Header File";
             this.Header.UseVisualStyleBackColor = true;
-            this.Header.Visible = false;
             this.Header.Click += new System.EventHandler(this.Header_Click);
             // 
             // OnlyUpdated
@@ -205,7 +201,6 @@ namespace hactool__
             this.OnlyUpdated.TabIndex = 32;
             this.OnlyUpdated.Text = "Only Updated";
             this.OnlyUpdated.UseVisualStyleBackColor = true;
-            this.OnlyUpdated.Visible = false;
             this.OnlyUpdated.Click += new System.EventHandler(this.OnlyUpdated_Click);
             // 
             // TitleKeyInput

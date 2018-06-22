@@ -10,98 +10,167 @@ namespace hactool__
         public MainForm()
         {
             InitializeComponent();
+
+            // hactool.exe Depedency Check!
+            if (!File.Exists("hactool.exe"))
+            {
+                MessageBox.Show("hactool.exe must be in your directory to continue!", "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
+
+            // Does the switch home directory exist?
+            if (!Directory.Exists(switchHome))
+                Directory.CreateDirectory(switchHome);
+
+            // Check for a default Keys File...
+            DefaultKeyFileCheck();
+        }
+
+        private void DefaultKeyFileCheck()
+        {
+            // Do we have the default key file?
+            if (!File.Exists(defaultKeysFile))
+            {
+                // No default key file? Lets import one!
+                if (openKeyManager.ShowDialog() != DialogResult.OK)
+                {
+                    MessageBox.Show("You need a keys file to use this program", "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Do you want to make it your default?
+                if (MessageBox.Show("Do you want to make this your default prod.keys file?", "prod.keys import", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    File.Copy(openKeyManager.FileName, defaultKeysFile);
+            }
+        }
+
+        private void BulkUnpack()
+        {
+            MessageBox.Show("Hidden NCA Bulk Decryption! ¯\\_(ツ)_/¯");
+
+            // Decrypt each file in the selected directory!
+            string[] files = Directory.GetFiles(openFolderDialog.SelectedPath, "*.nca", SearchOption.TopDirectoryOnly);
+            foreach (string fileName in files)
+            {
+                string folderName = Path.GetFileNameWithoutExtension(fileName);
+                Directory.CreateDirectory(folderName);
+
+                // Extract the NCA files...
+                string command = String.Format(
+                "hactool.exe {0} --section0dir={1}\\Code --section1dir={2}\\Data --section2dir={3}\\Logo {4}",
+                keyFile, folderName, folderName, folderName, fileName);
+
+                // Extract the npdm files...
+                ExecuteCommand("cmd.exe", "/C " + command);
+
+                string npdm = folderName + "\\Code\\main.npdm";
+                if (File.Exists(npdm))
+                    ExecuteCommand("cmd.exe", String.Format("/C hactool.exe --intype=npdm {0} >{1}.txt", npdm, npdm));
+            }
+
+            bulkUnpack = false;
+            MessageBox.Show("Unpacked all NCA files!", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void KeyManager_Click(object sender, EventArgs e)
+        {
+            // Pick an alternate keys file
+            if (openKeyManager.ShowDialog() != DialogResult.OK)
+            {
+                if (File.Exists(defaultKeysFile))
+                {
+                    MessageBox.Show("Ok, will continue to use the default keys file", "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("You need a keys file to use this program", "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                } 
+            }
+
+            // Alternate keys file chosen
+            keyFile = "-k " + Path.GetFileName(openKeyManager.FileName);
         }
 
         private void Open_Click(object sender, EventArgs e)
         {
-            // Secret Shift-Key = Hidden NCA Bulk Decryption! (>'-')> (^'-'^) <('-'<)
             if ((ModifierKeys & Keys.Shift) == Keys.Shift)
-            { 
-                openFolderDialog.ShowDialog();
+            {
+                // Open NCA Folder dialog
+                if (openFolderDialog.ShowDialog() != DialogResult.OK)
+                    return;
 
-                MessageBox.Show("Hidden NCA Bulk Decryption! ¯\\_(ツ)_/¯");
-
-                // Decrypt each file in the selected directory!
-                string[] files = Directory.GetFiles(openFolderDialog.SelectedPath, "*.nca", SearchOption.TopDirectoryOnly);
-                foreach (string fileName in files)
-                {
-                    string folderName = Path.GetFileNameWithoutExtension(fileName);
-                    Directory.CreateDirectory(folderName);
-
-                    string command = String.Format(
-                    "hactool.exe --section0dir={0}\\Code --section1dir={1}\\Data --section2dir={2}\\Logo {3}",
-                    folderName, folderName, folderName, fileName);
-
-                    ExecuteCommand("cmd.exe", "/C " + command);
-
-                    string npdm = folderName + "\\Code\\main.npdm";
-                    if (File.Exists(npdm))
-                        ExecuteCommand("cmd.exe", String.Format("/C hactool.exe --intype=npdm {0} >{1}.txt", npdm, npdm));
-                }
-
-                MessageBox.Show("Done!", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                // Secret Shift-Key = Hidden NCA Bulk Decryption! (>'-')> (^'-'^) <('-'<)
+                bulkUnpack = true;
             }
             else
             {
-                openFileDialog.ShowDialog();
-
+                // Open NCA File dialog
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                    return;
+                
+                // Populate the Textbox with the file
                 InputFileBox.Text = openFileDialog.FileName;
-
-                if (InputFileBox.Text.Contains(".nca"))
-                { 
-                    OutputOptionsLabel.Show();
-                    Plaintext.Show();
-                    Header.Show();
-                    OnlyUpdated.Show();
-                }
+                bulkUnpack = false;
             }
         }
 
-        private void KeyManager_Click(object sender, System.EventArgs e) => openKeyManager.ShowDialog();
-
-        private void Start_Click(object sender, System.EventArgs e)
+        private void Start_Click(object sender, EventArgs e)
         {
-            string keyFile = Path.GetFileName(openKeyManager.FileName);
-
+            // Use the alternate keys file?
             if (!String.IsNullOrEmpty(keyFile))
-                keyFile = "-k " + keyFile;
-            else
-                keyFile = "";
+            {
+                // No keys file to use!
+                MessageBox.Show("No keys file to use!\n\n" + switchHome, "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
+            if (bulkUnpack)
+                BulkUnpack();
+
+            // Load the titlekey from the form
             string titleKey = TitleKeyInput.Text;
 
-            if (!String.IsNullOrEmpty(titleKey))
+            // If there's a titlekey there then use it!
+            if (!String.IsNullOrEmpty(titleKey) && titleKey.Length == 32)
                 titleKey = "--titlekey=\"" + titleKey + "\"";
             else
                 titleKey = "";
 
-            string fileLocation = InputFileBox.Text;
+            // Validate File and Folder Names
             string fileName = Path.GetFileName(InputFileBox.Text);
-            string plaintextOutput = fileName;
-            string headerOutput = fileName;
-            string onlyUpdatedOutput = "";
+            string folderName = Path.GetFileNameWithoutExtension(InputFileBox.Text);
 
+            if (!fileName.Contains(".nca"))
+            {
+                // Not an NCA!
+                MessageBox.Show("No NCA file to unpack!\n\n" + switchHome, "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string plaintextOutput = "";
             if (Plaintext.Checked)
-                plaintextOutput = "--plaintext=plaintext-" + plaintextOutput;
-            else
-                plaintextOutput = "";
+                plaintextOutput = "--plaintext=plaintext-" + fileName;
 
+            string headerOutput = "";
             if (Header.Checked)
-                headerOutput = "--header=header-" + headerOutput;
-            else
-                headerOutput = "";
+                headerOutput = "--header=header-" + fileName;
 
+            string onlyUpdatedOutput = "";
             if (OnlyUpdated.Checked)
                 onlyUpdatedOutput = "--onlyupdated";
 
-            string folderName = Path.GetFileNameWithoutExtension(InputFileBox.Text);
+            // Create the output directory
             Directory.CreateDirectory(folderName);
 
+            // Example command...
             // hactool.exe -k keys.dat --titlekey="0123456789ABCDEF0123456789ABCDEF" --section0dir=program\Code --section1dir=program\Data --section2dir=program\Logo program.nca 
             string command = String.Format(
             "hactool.exe {0} {1} --section0dir={2}\\Code --section1dir={3}\\Data --section2dir={4}\\Logo {5} {6} {7} {8}",
-            keyFile, titleKey, folderName, folderName, folderName, plaintextOutput, headerOutput, onlyUpdatedOutput, fileLocation);
+            keyFile, titleKey, folderName, folderName, folderName, plaintextOutput, headerOutput, onlyUpdatedOutput, InputFileBox.Text);
 
+            // Uncomment for testing hactool command text...
             //MessageBox.Show(command);
             ExecuteCommand("cmd.exe", "/C " + command);
 
@@ -118,7 +187,7 @@ namespace hactool__
                 ExecuteCommand("cmd.exe", "/C " + command);
             }
 
-            MessageBox.Show("Done!", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBox.Show("Successfully Unpacked the NCA to...\n\n" + Directory.GetCurrentDirectory() + "\\" + folderName, "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         public bool ExecuteCommand(string exeDir, string args)
@@ -153,6 +222,7 @@ namespace hactool__
             }
         }
 
+
         bool isPlaintext = false;
         private void Plaintext_Click(object sender, EventArgs e)
         {
@@ -176,5 +246,10 @@ namespace hactool__
                 OnlyUpdated.Checked = false;
                 isOnlyUpdated = OnlyUpdated.Checked;
         }
+
+        private string keyFile = "";
+        private bool bulkUnpack = false;
+        private readonly string defaultKeysFile = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%") + "\\.switch\\prod.keys";
+        private readonly string switchHome = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%") + "\\.switch";
     }
 }
