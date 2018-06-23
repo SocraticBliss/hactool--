@@ -73,14 +73,21 @@ namespace hactool__
 
         private void NCAUnpack()
         {
+            // Load the titlekey from the form
+            string titleKey = TitleKey.Text;
+
+            // If there's a titlekey there then use it!
+            if (!String.IsNullOrEmpty(titleKey) && titleKey.Length == 32)
+                titleKey = "--titlekey=\"" + titleKey + "\"";
+            else
+                titleKey = "";
+
             // Single or Secret Bulk?
             if (bulkUnpack)
             {
-                MessageBox.Show("Hidden NCA Bulk Decryption!\n\n" +
-                                "Be paitent after hitting OK", "(>'-')> (^'-'^) <('-'<)");
-
                 // Decrypt each file in the selected directory!
                 string[] files = Directory.GetFiles(OpenFolderDialog.SelectedPath, "*.nca", SearchOption.TopDirectoryOnly);
+
                 foreach (string fileName in files)
                 {
                     string folderName = Path.GetFileNameWithoutExtension(fileName);
@@ -88,41 +95,24 @@ namespace hactool__
 
                     // Extract the NCA files...
                     string command = String.Format(
-                    "hactool.exe {0} --section0dir={1}\\Section0 --section1dir={2}\\Section1 --section2dir={3}\\Section2 {4}",
-                    keyFile, folderName, folderName, folderName, fileName);
+                    "hactool.exe {0} {1} --section0dir={2}\\Section0 --section1dir={3}\\Section1 --section2dir={4}\\Section2 {5}",
+                    keyFile, titleKey, folderName, folderName, folderName, fileName);
+
                     ExecuteCommand("cmd.exe", "/C " + command);
 
                     // Extract any npdm files...
-                    string npdm = folderName + "\\Code\\main.npdm";
+                    string npdm = folderName + "\\Section0\\main.npdm";
                     if (File.Exists(npdm))
                         ExecuteCommand("cmd.exe", String.Format("/C hactool.exe {0} --intype=npdm {1} >{2}.txt", keyFile, npdm, npdm));
                 }
-
-                MessageBox.Show("Unpacked all NCA files!", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                bulkUnpack = false;
             }
             else
             {
-                // Load the titlekey from the form
-                string titleKey = TitleKey.Text;
-
-                // If there's a titlekey there then use it!
-                if (!String.IsNullOrEmpty(titleKey) && titleKey.Length == 32)
-                    titleKey = "--titlekey=\"" + titleKey + "\"";
-                else
-                    titleKey = "";
-
                 // Validate File and Folder Names
                 string fileName = Path.GetFileName(InputFile.Text);
                 string folderName = Path.GetFileNameWithoutExtension(InputFile.Text);
 
-                if (!fileName.Contains(".nca"))
-                {
-                    // Not an NCA!
-                    MessageBox.Show("No NCA file to unpack!\n\n" + switchHome, "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
+                // Get Ouput Options
                 string plaintextOutput = "";
                 if (Plaintext.Checked)
                     plaintextOutput = "--plaintext=plaintext-" + fileName;
@@ -161,7 +151,7 @@ namespace hactool__
                     ExecuteCommand("cmd.exe", "/C " + command);
                 }
 
-                MessageBox.Show("Successfully Unpacked the NCA to...\n\n" + Directory.GetCurrentDirectory() + "\\" + folderName, "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show("Successfully Unpacked NCA to...\n\n" + Directory.GetCurrentDirectory() + "\\" + folderName, "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
         }
 
@@ -190,6 +180,8 @@ namespace hactool__
                 if (OpenFolderDialog.ShowDialog() != DialogResult.OK)
                     return;
 
+                // Populate the Textbox with the folder
+                InputFile.Text = OpenFolderDialog.SelectedPath;
                 bulkUnpack = true;
             }
             else
@@ -214,8 +206,30 @@ namespace hactool__
                 return;
             }
 
+            // Background Processing!
+            hactoolProgress.Visible = true;
+            hactoolProgress.Style = ProgressBarStyle.Marquee;
+
+            Start.Enabled = false;
+            backgroundHactool.RunWorkerAsync();
+        }
+        #endregion
+
+        #region BackgroundHandler
+        private void backgroundHactool_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
             // Unpack the NCA's!
             NCAUnpack();
+        }
+
+        private void backgroundHactool_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            // Hide the Progress bar
+            hactoolProgress.Visible = false;
+            Start.Enabled = true;
+
+            MessageBox.Show("Unpacked all NCA files!", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            bulkUnpack = false;
         }
         #endregion
 

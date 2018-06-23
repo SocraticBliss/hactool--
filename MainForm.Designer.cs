@@ -36,13 +36,15 @@
             this.OnlyUpdated = new System.Windows.Forms.CheckBox();
             this.Plaintext = new System.Windows.Forms.CheckBox();
             this.InputFile = new System.Windows.Forms.TextBox();
-            this.TitleKey = new System.Windows.Forms.HexBox();
             this.Open = new System.Windows.Forms.Button();
             this.OpenKeys = new System.Windows.Forms.Button();
             this.Start = new System.Windows.Forms.Button();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.OpenKeysDialog = new System.Windows.Forms.OpenFileDialog();
             this.OpenFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.TitleKey = new System.Windows.Forms.HexBox();
+            this.hactoolProgress = new System.Windows.Forms.ProgressBar();
+            this.backgroundHactool = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // InputFileLabel
@@ -143,23 +145,6 @@
             this.InputFile.Size = new System.Drawing.Size(293, 16);
             this.InputFile.TabIndex = 1;
             // 
-            // TitleKey
-            // 
-            this.TitleKey.AccessibleDescription = "Enter the 16 byte Title Key here";
-            this.TitleKey.AccessibleName = "TitleKey";
-            this.TitleKey.AllowDrop = true;
-            this.TitleKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.TitleKey.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TitleKey.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TitleKey.Location = new System.Drawing.Point(67, 45);
-            this.TitleKey.Margin = new System.Windows.Forms.Padding(2);
-            this.TitleKey.MaxLength = 32;
-            this.TitleKey.Name = "TitleKey";
-            this.TitleKey.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.TitleKey.Size = new System.Drawing.Size(293, 16);
-            this.TitleKey.TabIndex = 2;
-            this.TitleKey.WordWrap = false;
-            // 
             // Open
             // 
             this.Open.AccessibleDescription = "Opens a File Dialog if clicked or if holding the shift key, will open a folder fo" +
@@ -190,7 +175,7 @@
             this.OpenKeys.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.OpenKeys.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.OpenKeys.ForeColor = System.Drawing.Color.White;
-            this.OpenKeys.Location = new System.Drawing.Point(219, 89);
+            this.OpenKeys.Location = new System.Drawing.Point(219, 100);
             this.OpenKeys.Margin = new System.Windows.Forms.Padding(2);
             this.OpenKeys.Name = "OpenKeys";
             this.OpenKeys.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -210,7 +195,7 @@
             this.Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Start.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Start.ForeColor = System.Drawing.Color.White;
-            this.Start.Location = new System.Drawing.Point(348, 89);
+            this.Start.Location = new System.Drawing.Point(348, 100);
             this.Start.Margin = new System.Windows.Forms.Padding(2);
             this.Start.Name = "Start";
             this.Start.Size = new System.Drawing.Size(125, 39);
@@ -232,12 +217,46 @@
             this.OpenKeysDialog.InitialDirectory = ".";
             this.OpenKeysDialog.Title = "Select a Keys File...";
             // 
+            // TitleKey
+            // 
+            this.TitleKey.AccessibleDescription = "Enter the 16 byte Title Key here";
+            this.TitleKey.AccessibleName = "TitleKey";
+            this.TitleKey.AllowDrop = true;
+            this.TitleKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.TitleKey.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TitleKey.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TitleKey.Location = new System.Drawing.Point(67, 45);
+            this.TitleKey.Margin = new System.Windows.Forms.Padding(2);
+            this.TitleKey.MaxLength = 32;
+            this.TitleKey.Name = "TitleKey";
+            this.TitleKey.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.TitleKey.Size = new System.Drawing.Size(293, 16);
+            this.TitleKey.TabIndex = 2;
+            this.TitleKey.WordWrap = false;
+            // 
+            // hactoolProgress
+            // 
+            this.hactoolProgress.AccessibleDescription = "Overall progress of the extraction";
+            this.hactoolProgress.AccessibleName = "hactoolProgress";
+            this.hactoolProgress.Location = new System.Drawing.Point(375, 69);
+            this.hactoolProgress.Name = "hactoolProgress";
+            this.hactoolProgress.Size = new System.Drawing.Size(97, 23);
+            this.hactoolProgress.TabIndex = 30;
+            this.hactoolProgress.Visible = false;
+            // 
+            // backgroundHactool
+            // 
+            this.backgroundHactool.WorkerReportsProgress = true;
+            this.backgroundHactool.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundHactool_DoWork);
+            this.backgroundHactool.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundHactool_RunWorkerCompleted);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(485, 142);
+            this.ClientSize = new System.Drawing.Size(485, 150);
+            this.Controls.Add(this.hactoolProgress);
             this.Controls.Add(this.InputFileLabel);
             this.Controls.Add(this.OutputOptionsLabel);
             this.Controls.Add(this.TitleKeyLabel);
@@ -276,5 +295,8 @@
         private System.Windows.Forms.OpenFileDialog OpenKeysDialog;
         private System.Windows.Forms.FolderBrowserDialog OpenFolderDialog;
         #endregion
+
+        private System.Windows.Forms.ProgressBar hactoolProgress;
+        private System.ComponentModel.BackgroundWorker backgroundHactool;
     }
 }
