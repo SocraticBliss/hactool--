@@ -1,7 +1,4 @@
-﻿using System.Windows.Controls;
-using System.Windows.Forms;
-
-namespace hactool__
+﻿namespace hactool__
 {
     partial class MainForm
     {
@@ -32,39 +29,21 @@ namespace hactool__
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.KeyManager = new System.Windows.Forms.Button();
             this.InputFileLabel = new System.Windows.Forms.Label();
-            this.Open = new System.Windows.Forms.Button();
-            this.InputFileBox = new System.Windows.Forms.TextBox();
             this.OutputOptionsLabel = new System.Windows.Forms.Label();
-            this.Start = new System.Windows.Forms.Button();
             this.TitleKeyLabel = new System.Windows.Forms.Label();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.openKeyManager = new System.Windows.Forms.OpenFileDialog();
-            this.Plaintext = new System.Windows.Forms.CheckBox();
             this.Header = new System.Windows.Forms.CheckBox();
             this.OnlyUpdated = new System.Windows.Forms.CheckBox();
-            this.TitleKeyInput = new System.Windows.Controls.HexTextBox();
-            this.openFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.Plaintext = new System.Windows.Forms.CheckBox();
+            this.InputFile = new System.Windows.Forms.TextBox();
+            this.TitleKey = new System.Windows.Forms.HexBox();
+            this.Open = new System.Windows.Forms.Button();
+            this.OpenKeys = new System.Windows.Forms.Button();
+            this.Start = new System.Windows.Forms.Button();
+            this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.OpenKeysDialog = new System.Windows.Forms.OpenFileDialog();
+            this.OpenFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
-            // 
-            // KeyManager
-            // 
-            this.KeyManager.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.KeyManager.FlatAppearance.BorderSize = 0;
-            this.KeyManager.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
-            this.KeyManager.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.KeyManager.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.KeyManager.ForeColor = System.Drawing.Color.White;
-            this.KeyManager.Location = new System.Drawing.Point(219, 89);
-            this.KeyManager.Margin = new System.Windows.Forms.Padding(2);
-            this.KeyManager.Name = "KeyManager";
-            this.KeyManager.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.KeyManager.Size = new System.Drawing.Size(120, 39);
-            this.KeyManager.TabIndex = 6;
-            this.KeyManager.Text = "Select Keys";
-            this.KeyManager.UseVisualStyleBackColor = false;
-            this.KeyManager.Click += new System.EventHandler(this.KeyManager_Click);
             // 
             // InputFileLabel
             // 
@@ -79,35 +58,6 @@ namespace hactool__
             this.InputFileLabel.TabIndex = 16;
             this.InputFileLabel.Text = "Input NCA:";
             // 
-            // Open
-            // 
-            this.Open.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.Open.FlatAppearance.BorderSize = 0;
-            this.Open.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
-            this.Open.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Open.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Open.ForeColor = System.Drawing.Color.White;
-            this.Open.Location = new System.Drawing.Point(375, 15);
-            this.Open.Margin = new System.Windows.Forms.Padding(2);
-            this.Open.Name = "Open";
-            this.Open.Size = new System.Drawing.Size(98, 46);
-            this.Open.TabIndex = 4;
-            this.Open.Text = "Select NCA";
-            this.Open.UseVisualStyleBackColor = false;
-            this.Open.Click += new System.EventHandler(this.Open_Click);
-            // 
-            // InputFileBox
-            // 
-            this.InputFileBox.AllowDrop = true;
-            this.InputFileBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.InputFileBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.InputFileBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.InputFileBox.Location = new System.Drawing.Point(67, 15);
-            this.InputFileBox.Margin = new System.Windows.Forms.Padding(2);
-            this.InputFileBox.Name = "InputFileBox";
-            this.InputFileBox.Size = new System.Drawing.Size(293, 16);
-            this.InputFileBox.TabIndex = 3;
-            // 
             // OutputOptionsLabel
             // 
             this.OutputOptionsLabel.AutoSize = true;
@@ -120,23 +70,6 @@ namespace hactool__
             this.OutputOptionsLabel.Size = new System.Drawing.Size(93, 13);
             this.OutputOptionsLabel.TabIndex = 19;
             this.OutputOptionsLabel.Text = "Output Options:";
-            // 
-            // Start
-            // 
-            this.Start.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.Start.FlatAppearance.BorderSize = 0;
-            this.Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
-            this.Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Start.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Start.ForeColor = System.Drawing.Color.White;
-            this.Start.Location = new System.Drawing.Point(348, 89);
-            this.Start.Margin = new System.Windows.Forms.Padding(2);
-            this.Start.Name = "Start";
-            this.Start.Size = new System.Drawing.Size(125, 39);
-            this.Start.TabIndex = 2;
-            this.Start.Text = "Unpack";
-            this.Start.UseVisualStyleBackColor = false;
-            this.Start.Click += new System.EventHandler(this.Start_Click);
             // 
             // TitleKeyLabel
             // 
@@ -151,76 +84,153 @@ namespace hactool__
             this.TitleKeyLabel.TabIndex = 29;
             this.TitleKeyLabel.Text = "Titlekey:";
             // 
-            // openFileDialog
-            // 
-            this.openFileDialog.DefaultExt = "nca";
-            this.openFileDialog.Filter = "NCA File (*.nca)|*.nca|All Files (*.*)|*.*";
-            this.openFileDialog.Title = "Select a NCA File...";
-            // 
-            // openKeyManager
-            // 
-            this.openKeyManager.DefaultExt = "keys";
-            this.openKeyManager.Filter = "Keys File (*.keys)|*.keys|All Files (*.*)|*.*";
-            this.openKeyManager.InitialDirectory = ".";
-            this.openKeyManager.Title = "Select a Keys File...";
-            // 
-            // Plaintext
-            // 
-            this.Plaintext.AutoSize = true;
-            this.Plaintext.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Plaintext.ForeColor = System.Drawing.Color.White;
-            this.Plaintext.Location = new System.Drawing.Point(10, 92);
-            this.Plaintext.Name = "Plaintext";
-            this.Plaintext.Size = new System.Drawing.Size(91, 17);
-            this.Plaintext.TabIndex = 30;
-            this.Plaintext.Text = "Plaintext File";
-            this.Plaintext.UseVisualStyleBackColor = true;
-            this.Plaintext.Click += new System.EventHandler(this.Plaintext_Click);
-            // 
             // Header
             // 
+            this.Header.AccessibleDescription = "Do you want the header as a seperate output file?";
+            this.Header.AccessibleName = "OutputHeader";
             this.Header.AutoSize = true;
             this.Header.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Header.ForeColor = System.Drawing.Color.White;
             this.Header.Location = new System.Drawing.Point(112, 92);
             this.Header.Name = "Header";
             this.Header.Size = new System.Drawing.Size(84, 17);
-            this.Header.TabIndex = 31;
+            this.Header.TabIndex = 5;
             this.Header.Text = "Header File";
             this.Header.UseVisualStyleBackColor = true;
             this.Header.Click += new System.EventHandler(this.Header_Click);
             // 
             // OnlyUpdated
             // 
+            this.OnlyUpdated.AccessibleDescription = "Only output the updates not the base";
+            this.OnlyUpdated.AccessibleName = "OutputOnlyUpdated";
             this.OnlyUpdated.AutoSize = true;
             this.OnlyUpdated.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.OnlyUpdated.ForeColor = System.Drawing.Color.White;
             this.OnlyUpdated.Location = new System.Drawing.Point(10, 115);
             this.OnlyUpdated.Name = "OnlyUpdated";
             this.OnlyUpdated.Size = new System.Drawing.Size(98, 17);
-            this.OnlyUpdated.TabIndex = 32;
+            this.OnlyUpdated.TabIndex = 6;
             this.OnlyUpdated.Text = "Only Updated";
             this.OnlyUpdated.UseVisualStyleBackColor = true;
             this.OnlyUpdated.Click += new System.EventHandler(this.OnlyUpdated_Click);
             // 
-            // TitleKeyInput
+            // Plaintext
             // 
-            this.TitleKeyInput.AllowDrop = true;
-            this.TitleKeyInput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.TitleKeyInput.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TitleKeyInput.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TitleKeyInput.Location = new System.Drawing.Point(67, 45);
-            this.TitleKeyInput.Margin = new System.Windows.Forms.Padding(2);
-            this.TitleKeyInput.MaxLength = 32;
-            this.TitleKeyInput.Name = "TitleKeyInput";
-            this.TitleKeyInput.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.TitleKeyInput.Size = new System.Drawing.Size(293, 16);
-            this.TitleKeyInput.TabIndex = 1;
-            this.TitleKeyInput.WordWrap = false;
+            this.Plaintext.AccessibleDescription = "Do you want a decrypted copy of the NCA file?";
+            this.Plaintext.AccessibleName = "OutputPlaintext";
+            this.Plaintext.AutoSize = true;
+            this.Plaintext.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Plaintext.ForeColor = System.Drawing.Color.White;
+            this.Plaintext.Location = new System.Drawing.Point(10, 92);
+            this.Plaintext.Name = "Plaintext";
+            this.Plaintext.Size = new System.Drawing.Size(91, 17);
+            this.Plaintext.TabIndex = 4;
+            this.Plaintext.Text = "Plaintext File";
+            this.Plaintext.UseVisualStyleBackColor = true;
+            this.Plaintext.Click += new System.EventHandler(this.Plaintext_Click);
             // 
-            // openFolderDialog
+            // InputFile
             // 
-            this.openFolderDialog.RootFolder = System.Environment.SpecialFolder.DesktopDirectory;
+            this.InputFile.AccessibleDescription = "You can paste a NCA file location in here";
+            this.InputFile.AccessibleName = "InputFile";
+            this.InputFile.AllowDrop = true;
+            this.InputFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.InputFile.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.InputFile.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.InputFile.Location = new System.Drawing.Point(67, 15);
+            this.InputFile.Margin = new System.Windows.Forms.Padding(2);
+            this.InputFile.Name = "InputFile";
+            this.InputFile.Size = new System.Drawing.Size(293, 16);
+            this.InputFile.TabIndex = 1;
+            // 
+            // TitleKey
+            // 
+            this.TitleKey.AccessibleDescription = "Enter the 16 byte Title Key here";
+            this.TitleKey.AccessibleName = "TitleKey";
+            this.TitleKey.AllowDrop = true;
+            this.TitleKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.TitleKey.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TitleKey.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TitleKey.Location = new System.Drawing.Point(67, 45);
+            this.TitleKey.Margin = new System.Windows.Forms.Padding(2);
+            this.TitleKey.MaxLength = 32;
+            this.TitleKey.Name = "TitleKey";
+            this.TitleKey.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.TitleKey.Size = new System.Drawing.Size(293, 16);
+            this.TitleKey.TabIndex = 2;
+            this.TitleKey.WordWrap = false;
+            // 
+            // Open
+            // 
+            this.Open.AccessibleDescription = "Opens a File Dialog if clicked or if holding the shift key, will open a folder fo" +
+    "r bulk input";
+            this.Open.AccessibleName = "OpenFileorFolder";
+            this.Open.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Open.FlatAppearance.BorderSize = 0;
+            this.Open.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
+            this.Open.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Open.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Open.ForeColor = System.Drawing.Color.White;
+            this.Open.Location = new System.Drawing.Point(375, 15);
+            this.Open.Margin = new System.Windows.Forms.Padding(2);
+            this.Open.Name = "Open";
+            this.Open.Size = new System.Drawing.Size(98, 46);
+            this.Open.TabIndex = 3;
+            this.Open.Text = "Open File";
+            this.Open.UseVisualStyleBackColor = false;
+            this.Open.Click += new System.EventHandler(this.Open_Click);
+            // 
+            // OpenKeys
+            // 
+            this.OpenKeys.AccessibleDescription = "For selecting an alternate keys file";
+            this.OpenKeys.AccessibleName = "OpenKeys";
+            this.OpenKeys.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.OpenKeys.FlatAppearance.BorderSize = 0;
+            this.OpenKeys.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
+            this.OpenKeys.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.OpenKeys.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.OpenKeys.ForeColor = System.Drawing.Color.White;
+            this.OpenKeys.Location = new System.Drawing.Point(219, 89);
+            this.OpenKeys.Margin = new System.Windows.Forms.Padding(2);
+            this.OpenKeys.Name = "OpenKeys";
+            this.OpenKeys.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.OpenKeys.Size = new System.Drawing.Size(120, 39);
+            this.OpenKeys.TabIndex = 7;
+            this.OpenKeys.Text = "Open Keys";
+            this.OpenKeys.UseVisualStyleBackColor = false;
+            this.OpenKeys.Click += new System.EventHandler(this.OpenKeys_Click);
+            // 
+            // Start
+            // 
+            this.Start.AccessibleDescription = "Start the un-packing process";
+            this.Start.AccessibleName = "Start";
+            this.Start.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Start.FlatAppearance.BorderSize = 0;
+            this.Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
+            this.Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Start.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Start.ForeColor = System.Drawing.Color.White;
+            this.Start.Location = new System.Drawing.Point(348, 89);
+            this.Start.Margin = new System.Windows.Forms.Padding(2);
+            this.Start.Name = "Start";
+            this.Start.Size = new System.Drawing.Size(125, 39);
+            this.Start.TabIndex = 8;
+            this.Start.Text = "Start";
+            this.Start.UseVisualStyleBackColor = false;
+            this.Start.Click += new System.EventHandler(this.Start_Click);
+            // 
+            // OpenFileDialog
+            // 
+            this.OpenFileDialog.DefaultExt = "nca";
+            this.OpenFileDialog.Filter = "NCA File (*.nca)|*.nca|All Files (*.*)|*.*";
+            this.OpenFileDialog.Title = "Select a NCA File...";
+            // 
+            // OpenKeysDialog
+            // 
+            this.OpenKeysDialog.DefaultExt = "keys";
+            this.OpenKeysDialog.Filter = "Keys File (*.keys)|*.keys|All Files (*.*)|*.*";
+            this.OpenKeysDialog.InitialDirectory = ".";
+            this.OpenKeysDialog.Title = "Select a Keys File...";
             // 
             // MainForm
             // 
@@ -228,19 +238,20 @@ namespace hactool__
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(485, 142);
-            this.Controls.Add(this.OnlyUpdated);
-            this.Controls.Add(this.Header);
-            this.Controls.Add(this.Plaintext);
-            this.Controls.Add(this.TitleKeyInput);
-            this.Controls.Add(this.TitleKeyLabel);
-            this.Controls.Add(this.Start);
-            this.Controls.Add(this.OutputOptionsLabel);
-            this.Controls.Add(this.InputFileBox);
-            this.Controls.Add(this.Open);
             this.Controls.Add(this.InputFileLabel);
-            this.Controls.Add(this.KeyManager);
+            this.Controls.Add(this.OutputOptionsLabel);
+            this.Controls.Add(this.TitleKeyLabel);
+            this.Controls.Add(this.Header);
+            this.Controls.Add(this.OnlyUpdated);
+            this.Controls.Add(this.Plaintext);
+            this.Controls.Add(this.TitleKey);
+            this.Controls.Add(this.Start);
+            this.Controls.Add(this.InputFile);
+            this.Controls.Add(this.Open);
+            this.Controls.Add(this.OpenKeys);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "hactool++";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -249,20 +260,21 @@ namespace hactool__
 
         #endregion
 
-        internal System.Windows.Forms.Button KeyManager;
-        internal System.Windows.Forms.Button Open;
-        internal System.Windows.Forms.Button Start;
+        #region Variables
         internal System.Windows.Forms.Label InputFileLabel;
         internal System.Windows.Forms.Label OutputOptionsLabel;
         internal System.Windows.Forms.Label TitleKeyLabel;
-        internal System.Windows.Forms.TextBox InputFileBox;
-        internal HexTextBox TitleKeyInput;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.OpenFileDialog openKeyManager;
-        private System.Windows.Forms.CheckBox Plaintext;
         private System.Windows.Forms.CheckBox Header;
         private System.Windows.Forms.CheckBox OnlyUpdated;
-        private System.Windows.Forms.FolderBrowserDialog openFolderDialog;
+        private System.Windows.Forms.CheckBox Plaintext;
+        internal System.Windows.Forms.TextBox InputFile;
+        internal System.Windows.Forms.HexBox TitleKey;
+        internal System.Windows.Forms.Button Open;
+        internal System.Windows.Forms.Button OpenKeys;
+        internal System.Windows.Forms.Button Start;
+        private System.Windows.Forms.OpenFileDialog OpenFileDialog;
+        private System.Windows.Forms.OpenFileDialog OpenKeysDialog;
+        private System.Windows.Forms.FolderBrowserDialog OpenFolderDialog;
+        #endregion
     }
 }
-
