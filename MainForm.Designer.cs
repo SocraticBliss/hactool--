@@ -208,13 +208,14 @@
             // 
             this.OpenFileDialog.DefaultExt = "nca";
             this.OpenFileDialog.Filter = "NCA File (*.nca)|*.nca|All Files (*.*)|*.*";
+            this.OpenFileDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
             this.OpenFileDialog.Title = "Select a NCA File...";
             // 
             // OpenKeysDialog
             // 
             this.OpenKeysDialog.DefaultExt = "keys";
             this.OpenKeysDialog.Filter = "Keys File (*.keys)|*.keys|All Files (*.*)|*.*";
-            this.OpenKeysDialog.InitialDirectory = ".";
+            this.OpenKeysDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
             this.OpenKeysDialog.Title = "Select a Keys File...";
             // 
             // TitleKey
