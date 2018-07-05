@@ -45,6 +45,7 @@
             this.TitleKey = new System.Windows.Forms.HexBox();
             this.hactoolProgress = new System.Windows.Forms.ProgressBar();
             this.backgroundHactool = new System.ComponentModel.BackgroundWorker();
+            this.UnpackingLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // InputFileLabel
@@ -56,9 +57,9 @@
             this.InputFileLabel.Location = new System.Drawing.Point(3, 16);
             this.InputFileLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.InputFileLabel.Name = "InputFileLabel";
-            this.InputFileLabel.Size = new System.Drawing.Size(63, 13);
+            this.InputFileLabel.Size = new System.Drawing.Size(38, 13);
             this.InputFileLabel.TabIndex = 16;
-            this.InputFileLabel.Text = "Input NCA:";
+            this.InputFileLabel.Text = "Input:";
             // 
             // OutputOptionsLabel
             // 
@@ -133,7 +134,7 @@
             // 
             // InputFile
             // 
-            this.InputFile.AccessibleDescription = "You can paste a NCA file location in here";
+            this.InputFile.AccessibleDescription = "You can paste a file location in here";
             this.InputFile.AccessibleName = "InputFile";
             this.InputFile.AllowDrop = true;
             this.InputFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -167,7 +168,7 @@
             // 
             // OpenKeys
             // 
-            this.OpenKeys.AccessibleDescription = "For selecting an alternate keys file";
+            this.OpenKeys.AccessibleDescription = "For selecting a keys file";
             this.OpenKeys.AccessibleName = "OpenKeys";
             this.OpenKeys.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.OpenKeys.FlatAppearance.BorderSize = 0;
@@ -190,6 +191,7 @@
             this.Start.AccessibleDescription = "Start the un-packing process";
             this.Start.AccessibleName = "Start";
             this.Start.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Start.Enabled = false;
             this.Start.FlatAppearance.BorderSize = 0;
             this.Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
             this.Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -207,20 +209,20 @@
             // OpenFileDialog
             // 
             this.OpenFileDialog.DefaultExt = "nca";
-            this.OpenFileDialog.Filter = "NCA File (*.nca)|*.nca|All Files (*.*)|*.*";
-            this.OpenFileDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
-            this.OpenFileDialog.Title = "Select a NCA File...";
+            this.OpenFileDialog.Filter = "Switch Files|*.nca;*.xci;*.nsp|All Files (*.*)|*.*";
+            this.OpenFileDialog.InitialDirectory = "D:\\GITHUB\\hactool--";
+            this.OpenFileDialog.Title = "Select a File...";
             // 
             // OpenKeysDialog
             // 
             this.OpenKeysDialog.DefaultExt = "keys";
-            this.OpenKeysDialog.Filter = "Keys File (*.keys)|*.keys|All Files (*.*)|*.*";
-            this.OpenKeysDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
+            this.OpenKeysDialog.Filter = "Keys File|*.keys;*.txt|All Files (*.*)|*.*";
+            this.OpenKeysDialog.InitialDirectory = "D:\\GITHUB\\hactool--";
             this.OpenKeysDialog.Title = "Select a Keys File...";
             // 
             // TitleKey
             // 
-            this.TitleKey.AccessibleDescription = "Enter the 16 byte Title Key here";
+            this.TitleKey.AccessibleDescription = "Enter the 16 byte title key here";
             this.TitleKey.AccessibleName = "TitleKey";
             this.TitleKey.AllowDrop = true;
             this.TitleKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -251,12 +253,27 @@
             this.backgroundHactool.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundHactool_DoWork);
             this.backgroundHactool.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundHactool_RunWorkerCompleted);
             // 
+            // UnpackingLabel
+            // 
+            this.UnpackingLabel.AutoSize = true;
+            this.UnpackingLabel.BackColor = System.Drawing.Color.Gray;
+            this.UnpackingLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.UnpackingLabel.ForeColor = System.Drawing.Color.White;
+            this.UnpackingLabel.Location = new System.Drawing.Point(233, 74);
+            this.UnpackingLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.UnpackingLabel.Name = "UnpackingLabel";
+            this.UnpackingLabel.Size = new System.Drawing.Size(137, 13);
+            this.UnpackingLabel.TabIndex = 31;
+            this.UnpackingLabel.Text = "Unpacking... Please Wait!";
+            this.UnpackingLabel.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(485, 150);
+            this.Controls.Add(this.UnpackingLabel);
             this.Controls.Add(this.hactoolProgress);
             this.Controls.Add(this.InputFileLabel);
             this.Controls.Add(this.OutputOptionsLabel);
@@ -275,29 +292,27 @@
             this.Text = "hactool++";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
-
         #endregion
 
         #region Variables
         internal System.Windows.Forms.Label InputFileLabel;
         internal System.Windows.Forms.Label OutputOptionsLabel;
         internal System.Windows.Forms.Label TitleKeyLabel;
-        private System.Windows.Forms.CheckBox Header;
-        private System.Windows.Forms.CheckBox OnlyUpdated;
-        private System.Windows.Forms.CheckBox Plaintext;
+        internal System.Windows.Forms.Label UnpackingLabel;
         internal System.Windows.Forms.TextBox InputFile;
         internal System.Windows.Forms.HexBox TitleKey;
         internal System.Windows.Forms.Button Open;
         internal System.Windows.Forms.Button OpenKeys;
         internal System.Windows.Forms.Button Start;
+        private System.Windows.Forms.CheckBox Header;
+        private System.Windows.Forms.CheckBox OnlyUpdated;
+        private System.Windows.Forms.CheckBox Plaintext;
+        private System.Windows.Forms.FolderBrowserDialog OpenFolderDialog;
         private System.Windows.Forms.OpenFileDialog OpenFileDialog;
         private System.Windows.Forms.OpenFileDialog OpenKeysDialog;
-        private System.Windows.Forms.FolderBrowserDialog OpenFolderDialog;
-        #endregion
-
         private System.Windows.Forms.ProgressBar hactoolProgress;
         private System.ComponentModel.BackgroundWorker backgroundHactool;
+        #endregion 
     }
 }
