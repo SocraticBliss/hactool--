@@ -42,10 +42,10 @@
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.OpenKeysDialog = new System.Windows.Forms.OpenFileDialog();
             this.OpenFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.TitleKey = new System.Windows.Forms.HexBox();
             this.hactoolProgress = new System.Windows.Forms.ProgressBar();
             this.backgroundHactool = new System.ComponentModel.BackgroundWorker();
             this.UnpackingLabel = new System.Windows.Forms.Label();
+            this.TitleKey = new System.Windows.Forms.HexBox();
             this.SuspendLayout();
             // 
             // InputFileLabel
@@ -148,8 +148,7 @@
             // 
             // Open
             // 
-            this.Open.AccessibleDescription = "Opens a File Dialog if clicked or if holding the shift key, will open a folder fo" +
-    "r bulk input";
+            this.Open.AccessibleDescription = "Click = Opens a File Dialog, Shift+Click =  Opens a folder Folder Dialog";
             this.Open.AccessibleName = "OpenFileorFolder";
             this.Open.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.Open.FlatAppearance.BorderSize = 0;
@@ -209,33 +208,20 @@
             // OpenFileDialog
             // 
             this.OpenFileDialog.DefaultExt = "nca";
-            this.OpenFileDialog.Filter = "Switch Files|*.nca;*.xci;*.nsp|All Files (*.*)|*.*";
-            this.OpenFileDialog.InitialDirectory = "D:\\GITHUB\\hactool--";
+            this.OpenFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath;
+            this.OpenFileDialog.Filter = "Switch Files|*.nca;*.xci;*.nsp";
             this.OpenFileDialog.Title = "Select a File...";
             // 
             // OpenKeysDialog
             // 
             this.OpenKeysDialog.DefaultExt = "keys";
+            this.OpenKeysDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath;
             this.OpenKeysDialog.Filter = "Keys File|*.keys;*.txt|All Files (*.*)|*.*";
-            this.OpenKeysDialog.InitialDirectory = "D:\\GITHUB\\hactool--";
             this.OpenKeysDialog.Title = "Select a Keys File...";
             // 
-            // TitleKey
+            // OpenFolderDialog
             // 
-            this.TitleKey.AccessibleDescription = "Enter the 16 byte title key here";
-            this.TitleKey.AccessibleName = "TitleKey";
-            this.TitleKey.AllowDrop = true;
-            this.TitleKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.TitleKey.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TitleKey.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TitleKey.Location = new System.Drawing.Point(67, 45);
-            this.TitleKey.Margin = new System.Windows.Forms.Padding(2);
-            this.TitleKey.MaxLength = 32;
-            this.TitleKey.Name = "TitleKey";
-            this.TitleKey.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.TitleKey.Size = new System.Drawing.Size(293, 16);
-            this.TitleKey.TabIndex = 2;
-            this.TitleKey.WordWrap = false;
+            this.OpenFolderDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
             // hactoolProgress
             // 
@@ -267,6 +253,23 @@
             this.UnpackingLabel.Text = "Unpacking... Please Wait!";
             this.UnpackingLabel.Visible = false;
             // 
+            // TitleKey
+            // 
+            this.TitleKey.AccessibleDescription = "Enter the 16 byte title key here";
+            this.TitleKey.AccessibleName = "TitleKey";
+            this.TitleKey.AllowDrop = true;
+            this.TitleKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.TitleKey.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TitleKey.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TitleKey.Location = new System.Drawing.Point(67, 45);
+            this.TitleKey.Margin = new System.Windows.Forms.Padding(2);
+            this.TitleKey.MaxLength = 32;
+            this.TitleKey.Name = "TitleKey";
+            this.TitleKey.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.TitleKey.Size = new System.Drawing.Size(293, 16);
+            this.TitleKey.TabIndex = 2;
+            this.TitleKey.WordWrap = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -292,6 +295,7 @@
             this.Text = "hactool++";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
         #endregion
 

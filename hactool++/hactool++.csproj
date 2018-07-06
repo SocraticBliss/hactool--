@@ -128,4 +128,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y "$(SolutionDir)README.md" "."
+xcopy /y "$(SolutionDir)LICENSE" "."</PostBuildEvent>
+  </PropertyGroup>
 </Project>

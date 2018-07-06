@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using static System.Environment;
 
 namespace hactool__
 {
@@ -17,7 +18,7 @@ namespace hactool__
             {
                 if (!File.Exists(fileName))
                 {
-                    MessageBox.Show(fileName + " must be in your current directory to continue!\n\n", "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($@"{fileName} must be in your current directory to continue!", @"¯\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Environment.Exit(0);
                 }
             }
@@ -29,21 +30,21 @@ namespace hactool__
                 Directory.CreateDirectory(switchHome);
 
                 /// Import Keys?
-                if (MessageBox.Show("Do you want to import your keys?\n\n", "Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show("Do you want to import your keys?", "Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     if (OpenKeysDialog.ShowDialog() == DialogResult.OK)
                         File.Copy(OpenKeysDialog.FileName, defaultKeysFile);
                     else
-                        MessageBox.Show("Be sure to import a keys file before starting\n\n", "No default keys file", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        MessageBox.Show("Be sure to import a keys file before starting...", "No default keys file", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 }
             }
         }
 
-        private bool ExecuteCommand(string exeDir, string args)
+        private bool RunHactool(string args)
         {
             ProcessStartInfo procStartInfo = new ProcessStartInfo
             {
-                FileName = exeDir,
+                FileName = "hactool.exe",
                 Arguments = args,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -58,7 +59,16 @@ namespace hactool__
                 process.BeginOutputReadLine();
 
                 StreamReader myStreamReader = process.StandardError;
-                Console.WriteLine(myStreamReader.ReadLine());
+                string error = myStreamReader.ReadLine();
+                
+                /// Section 0 Corrupted!
+                if (error.Contains("corrupted"))
+                {
+                    if (procStartInfo.Arguments.Contains("titlekey="))
+                        MessageBox.Show($@"hactool.exe {error}{NewLine}{NewLine}Try another titlekey?", @"¯\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        MessageBox.Show($@"hactool.exe {error}{NewLine}{NewLine}Did you forget your titlekey?", @"¯\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 process.WaitForExit();
             }
 
@@ -67,40 +77,49 @@ namespace hactool__
 
         private void Unpack()
         {
+            string args = "";
+            string extension = "";
+            string npdm = "";
+
             /// Load the titlekey from the form
             string titleKey = TitleKey.Text;
 
             /// If there's a titlekey there then use it!
             if (!String.IsNullOrEmpty(titleKey) && titleKey.Length == 32)
-                titleKey = "--titlekey=" + titleKey;
+                titleKey = $@"--titlekey={titleKey}";
             else
                 titleKey = "";
 
-            /// Single (All) or Secret Bulk (NCA Only currently...)?
+            /// Single (All extensions) or Secret Bulk (NCA Only currently...)?
             if (bulkUnpack)
             {
-                /// Decrypt each file in the selected directory!
+                /// NCA Files!
+                extension = "NCA";
                 string[] files = Directory.GetFiles(OpenFolderDialog.SelectedPath, "*.nca", SearchOption.TopDirectoryOnly);
-
                 foreach (string fileName in files)
                 {
-                    string folderName = OpenFolderDialog.SelectedPath + "\\" + Path.GetFileNameWithoutExtension(fileName);
+                    string folderName = Path.Combine(OpenFolderDialog.SelectedPath, Path.GetFileNameWithoutExtension(fileName));
+                    //MessageBox.Show(folderName);
                     Directory.CreateDirectory(folderName);
 
                     /// Extract the NCA files...
-                    string command = String.Format(
-                    "hactool.exe {0} {1} --section0dir={2}\\Section0 --section1dir={3}\\Section1 --section2dir={4}\\Section2 {5}",
-                    keyFile, titleKey, folderName, folderName, folderName, fileName);
+                    args = $@" {keyFile} {titleKey} --section0dir={folderName}\Section0 --section1dir={folderName}\Section1 --section2dir={folderName}\Section2 {fileName}";
+                    //MessageBox.Show(args);
 
-                    ExecuteCommand("cmd.exe", "/C " + command);
+                    RunHactool($@"{args}");
 
                     /// Extract any npdm files...
-                    string npdm = String.Format("{0}\\Section0\\main.npdm", folderName);
+                    npdm = $@"{folderName}\Section0\main.npdm";
                     if (File.Exists(npdm))
-                        ExecuteCommand("cmd.exe", String.Format("/C hactool.exe {0} --intype=npdm {1} >{2}.txt", keyFile, npdm, npdm));
+                    {
+                        args = $@" {keyFile} --intype=npdm {npdm} >{npdm}.txt";
+                        //MessageBox.Show(args);
+
+                        RunHactool($@"{args}");
+                    }
                 }
 
-                MessageBox.Show("Unpacked all files!", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show($@"Successfully unpacked all {extension} files in...{NewLine}{NewLine}{OpenFolderDialog.SelectedPath}", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 bulkUnpack = false;
             }
             else
@@ -108,7 +127,7 @@ namespace hactool__
                 /// Validate File and Folder Names
                 string fileName = Path.GetFileName(InputFile.Text);
                 //MessageBox.Show(fileName);
-                string folderName = Path.GetDirectoryName(InputFile.Text) + "\\" + Path.GetFileNameWithoutExtension(InputFile.Text);
+                string folderName = Path.Combine(Path.GetDirectoryName(InputFile.Text), Path.GetFileNameWithoutExtension(InputFile.Text));
                 //MessageBox.Show(folderName);
 
                 /// Create the output directory
@@ -117,7 +136,7 @@ namespace hactool__
                 /// Check Ouput Options
                 string headerOutput = "";
                 if (Header.Checked)
-                    headerOutput = String.Format("--header={0}\\header-{1}", folderName, fileName);
+                    headerOutput = $@"--header={folderName}\header-{fileName}";
 
                 string onlyUpdatedOutput = "";
                 if (OnlyUpdated.Checked)
@@ -125,61 +144,53 @@ namespace hactool__
 
                 string plaintextOutput = "";
                 if (Plaintext.Checked)
-                    plaintextOutput = String.Format("--plaintext={0}\\plaintext-{1}", folderName, fileName);
+                    plaintextOutput = $@"--plaintext={folderName}\plaintext-{fileName}";
 
                 /* hactool.exe -k prod.keys --titlekey=0123456789ABCDEF0123456789ABCDEF
                    --section0dir=program\Section0 --section1dir=program\Section1 --section2dir=program\Section2 program.nca
                 */
 
-                string command = "";
-                string extension = "";
                 switch (Path.GetExtension(InputFile.Text))
                 {
                     case ".nsp":
                         extension = "NSP";
-                        command = String.Format(
-                        "hactool.exe {0} --intype=pfs0 --outdir={1} {2}",
-                        keyFile, folderName, InputFile.Text);
-                        //MessageBox.Show(command);
+                        args = $@" {keyFile} --intype=pfs0 --outdir={folderName} {InputFile.Text}";
+                        //MessageBox.Show(args);
 
-                        ExecuteCommand("cmd.exe", "/C " + command);
+                        RunHactool($@"{args}");
                         break;
 
                     case ".xci":
                         extension = "XCI";
-                        command = String.Format(
-                        "hactool.exe {0} --intype=xci --outdir={1} {2}",
-                        keyFile, folderName, InputFile.Text);
-                        //MessageBox.Show(command);
+                        args = $@" {keyFile} --intype=xci --outdir={folderName} {InputFile.Text}";
+                        //MessageBox.Show(args);
 
-                        ExecuteCommand("cmd.exe", "/C " + command);
+                        RunHactool($@"{args}");
                         break;
 
+                    case ".nca":
                     default:
                         extension = "NCA";
-                        command = String.Format(
-                        "hactool.exe {0} {1} --section0dir={2}\\Section0 --section1dir={3}\\Section1 --section2dir={4}\\Section2 {5} {6} {7} {8}",
-                        keyFile, titleKey, folderName, folderName, folderName, plaintextOutput, headerOutput, onlyUpdatedOutput, InputFile.Text);
-                        //MessageBox.Show(command);
+                        args = $@" {keyFile} {titleKey} --section0dir={folderName}\Section0 --section1dir={folderName}\Section1 --section2dir={folderName}\Section2 {plaintextOutput} {headerOutput} {onlyUpdatedOutput} {InputFile.Text}";
+                        //MessageBox.Show(args);
 
-                        ExecuteCommand("cmd.exe", "/C " + command);
+                        RunHactool($@"{args}");
 
                         /* Waiting for hactool.exe with the latest patches...
                          * --json={1}.txt
                          */
-                        string npdm = String.Format("{0}\\Section0\\main.npdm", folderName);
+                        npdm = $@"{folderName}\Section0\main.npdm";
                         if (File.Exists(npdm))
                         {
-                            command = String.Format(
-                            "hactool.exe {0} --intype=npdm {1} >{2}.txt",
-                            keyFile, npdm, npdm);
+                            args = $@" {keyFile} --intype=npdm {npdm} >{npdm}.txt";
+                            //MessageBox.Show(args);
 
-                            ExecuteCommand("cmd.exe", "/C " + command);
+                            RunHactool($@"{args}");
                         }
                         break;
                 }
 
-                MessageBox.Show("Successfully Unpacked " + extension + " to...\n\n" + folderName, "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show($@"Successfully Unpacked {extension} to...{NewLine}{NewLine}{folderName}", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
         }
 
@@ -190,13 +201,13 @@ namespace hactool__
             if (OpenKeysDialog.ShowDialog() == DialogResult.OK)
             {
                 /// Keys file chosen
-                keyFile = "-k " + Path.GetFileName(OpenKeysDialog.FileName);
+                keyFile = $@"-k {Path.GetFileName(OpenKeysDialog.FileName)}";
             }
 
             /// If no Default Keys file, ask if they want it to be?
             if (!File.Exists(defaultKeysFile))
             {
-                if (MessageBox.Show("Do you want to set this as your default keys?\n\n", "Set Default Keys", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show("Do you want to set this as your default keys file?", "Set Default Keys", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     File.Copy(OpenKeysDialog.FileName, defaultKeysFile);
             }
         }
@@ -211,7 +222,8 @@ namespace hactool__
                     // Populate the Textbox with the folder
                     InputFile.Text = OpenFolderDialog.SelectedPath;
                     Start.Enabled = true;
-                    
+                    bulkUnpack = true;
+
                     // Output Options? No
                     Header.Visible = false;
                     OnlyUpdated.Visible = false;
@@ -223,11 +235,12 @@ namespace hactool__
                 /// Open File dialog
                 if (OpenFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    /// Populate the Textbox with the file
+                    /// Populate the Textbox with the file and set as current directory
                     InputFile.Text = OpenFileDialog.FileName;
+                    OpenFileDialog.InitialDirectory = OpenFileDialog.FileName;
                     //MessageBox.Show(Path.GetExtension(InputFile.Text));
 
-                    switch(Path.GetExtension(InputFile.Text))
+                    switch (Path.GetExtension(InputFile.Text))
                     {
                         case ".xci":
                             /// Output Options? No
@@ -243,6 +256,7 @@ namespace hactool__
                             Plaintext.Visible = false;
                             break;
 
+                        case ".nca":
                         default:
                             /// Output Options? Yes
                             Header.Visible = true;
@@ -263,7 +277,7 @@ namespace hactool__
             if (!String.IsNullOrEmpty(keyFile))
             {
                 /// No keys file to use!
-                MessageBox.Show("No keys file to use, be sure to select your keys file!\n\n", "¯\\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No keys file to use, be sure to select your keys file!", @"¯\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -285,7 +299,7 @@ namespace hactool__
         }
 
         private void backgroundHactool_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-        {
+        {         
             /// Hide the Progress bar
             UnpackingLabel.Visible = false;
             hactoolProgress.Visible = false;
@@ -327,8 +341,8 @@ namespace hactool__
         private bool isHeader = false;
         private bool isOnlyUpdated = false;
         private bool isPlaintext = false;
-        private readonly string defaultKeysFile = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%") + "\\.switch\\prod.keys";
-        private readonly string switchHome = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%") + "\\.switch";
+        private readonly string defaultKeysFile = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%") + @"\.switch\prod.keys";
+        private readonly string switchHome = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%") + @"\.switch";
         private string keyFile = "";
         #endregion
     }
