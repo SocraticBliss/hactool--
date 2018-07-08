@@ -112,13 +112,92 @@ namespace hactool__
             else
                 titleKey = "";
 
-            /// Single (All extensions) or Secret Bulk (NCA Only currently...)?
+            /// Single or Secret Bulk?
             if (bulkUnpack)
             {
+                /// XCI Files!
+                string[] XCIfiles = Directory.GetFiles(OpenFolderDialog.SelectedPath, "*.xci", SearchOption.TopDirectoryOnly);
+                foreach (string fileName in XCIfiles)
+                {
+                    string folderName = Path.Combine(OpenFolderDialog.SelectedPath, Path.GetFileNameWithoutExtension(fileName));
+                    //MessageBox.Show(folderName);
+                    Directory.CreateDirectory(folderName);
+
+                    /// Extract the XCI files...
+                    args = $@"hactool.exe {keyFile} {titleKey} --intype=xci --outdir={folderName} {fileName}";
+                    //MessageBox.Show(args); 
+
+                    RunHactool($@"{args}");
+
+                    string[] internalNCAfiles = Directory.GetFiles($@"{folderName}", "*.nca", SearchOption.AllDirectories);
+                    foreach (string ncafile in internalNCAfiles)
+                    {
+                        string fileLocation = Path.GetDirectoryName(ncafile);
+                        string internalfolderName = Path.Combine(fileLocation, Path.GetFileNameWithoutExtension(ncafile));
+                        //MessageBox.Show(internalfolderName);
+                        Directory.CreateDirectory(internalfolderName);
+
+                        /// Extract the NCA files...
+                        args = $@"hactool.exe {keyFile} {titleKey} --section0dir={internalfolderName}\Section0 --section1dir={internalfolderName}\Section1 --section2dir={internalfolderName}\Section2 {ncafile}";
+                        //MessageBox.Show(args); 
+
+                        RunHactool($@"{args}");
+
+                        /// Extract any npdm files...
+                        npdm = $@"{internalfolderName}\Section0\main.npdm";
+                        if (File.Exists(npdm))
+                        {
+                            args = $@"hactool.exe {keyFile} {titleKey} --intype=npdm {npdm} >{npdm}.txt";
+                            //MessageBox.Show(args);
+
+                            RunHactool($@"{args}");
+                        }
+                    }
+                }
+
+                /// NSP Files!
+                string[] NSPfiles = Directory.GetFiles(OpenFolderDialog.SelectedPath, "*.nsp", SearchOption.TopDirectoryOnly);
+                foreach (string fileName in NSPfiles)
+                {
+                    string folderName = Path.Combine(OpenFolderDialog.SelectedPath, Path.GetFileNameWithoutExtension(fileName));
+                    //MessageBox.Show(folderName);
+                    Directory.CreateDirectory(folderName);
+
+                    /// Extract the NSP files...
+                    args = $@"hactool.exe {keyFile} {titleKey} --intype=pfs0 --outdir={folderName} {fileName}";
+                    //MessageBox.Show(args); 
+
+                    RunHactool($@"{args}");
+
+                    string[] internalNCAfiles = Directory.GetFiles($@"{folderName}", "*.nca", SearchOption.AllDirectories);
+                    foreach (string ncafile in internalNCAfiles)
+                    {
+                        string fileLocation = Path.GetDirectoryName(ncafile);
+                        string internalfolderName = Path.Combine(fileLocation, Path.GetFileNameWithoutExtension(ncafile));
+                        //MessageBox.Show(internalfolderName);
+                        Directory.CreateDirectory(internalfolderName);
+
+                        /// Extract the NCA files...
+                        args = $@"hactool.exe {keyFile} {titleKey} --section0dir={internalfolderName}\Section0 --section1dir={internalfolderName}\Section1 --section2dir={internalfolderName}\Section2 {ncafile}";
+                        //MessageBox.Show(args); 
+
+                        RunHactool($@"{args}");
+
+                        /// Extract any npdm files...
+                        npdm = $@"{internalfolderName}\Section0\main.npdm";
+                        if (File.Exists(npdm))
+                        {
+                            args = $@"hactool.exe {keyFile} {titleKey} --intype=npdm {npdm} >{npdm}.txt";
+                            //MessageBox.Show(args);
+
+                            RunHactool($@"{args}");
+                        }
+                    }
+                }
+
                 /// NCA Files!
-                extension = "NCA";
-                string[] files = Directory.GetFiles(OpenFolderDialog.SelectedPath, "*.nca", SearchOption.TopDirectoryOnly);
-                foreach (string fileName in files)
+                string[] NCAfiles = Directory.GetFiles(OpenFolderDialog.SelectedPath, "*.nca", SearchOption.TopDirectoryOnly);
+                foreach (string fileName in NCAfiles)
                 {
                     string folderName = Path.Combine(OpenFolderDialog.SelectedPath, Path.GetFileNameWithoutExtension(fileName));
                     //MessageBox.Show(folderName);
@@ -141,7 +220,7 @@ namespace hactool__
                     }
                 }
 
-                MessageBox.Show($@"Successfully unpacked all {extension} files in...{NewLine}{NewLine}{OpenFolderDialog.SelectedPath}", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show($@"Successfully unpacked all XCI/NSP/NCA files in...{NewLine}{NewLine}{OpenFolderDialog.SelectedPath}", "Thanks SciresM!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 bulkUnpack = false;
             }
             else
@@ -168,20 +247,9 @@ namespace hactool__
                 if (Plaintext.Checked)
                     plaintextOutput = $@"--plaintext={folderName}\plaintext-{fileName}";
 
-                /* hactool.exe -k prod.keys --titlekey=0123456789ABCDEF0123456789ABCDEF
-                   --section0dir=program\Section0 --section1dir=program\Section1 --section2dir=program\Section2 program.nca
-                */
-
+                /// Determine which extraction to perform
                 switch (Path.GetExtension(InputFile.Text))
                 {
-                    case ".nsp":
-                        extension = "NSP";
-                        args = $@"hactool.exe {keyFile} --intype=pfs0 --outdir={folderName} {InputFile.Text}";
-                        //MessageBox.Show(args);
-
-                        RunHactool($@"{args}");
-                        break;
-
                     case ".xci":
                         extension = "XCI";
                         args = $@"hactool.exe {keyFile} --intype=xci --outdir={folderName} {InputFile.Text}";
@@ -190,9 +258,22 @@ namespace hactool__
                         RunHactool($@"{args}");
                         break;
 
+                    case ".nsp":
+                        extension = "NSP";
+                        args = $@"hactool.exe {keyFile} --intype=pfs0 --outdir={folderName} {InputFile.Text}";
+                        //MessageBox.Show(args);
+
+                        RunHactool($@"{args}");
+                        break;
+
                     case ".nca":
                     default:
                         extension = "NCA";
+
+                        /* hactool.exe -k dev.keys --titlekey=0123456789ABCDEF0123456789ABCDEF
+                        --section0dir=program\Section0 --section1dir=program\Section1 --section2dir=program\Section2 program.nca
+                        */
+
                         args = $@"hactool.exe {keyFile} {titleKey} --section0dir={folderName}\Section0 --section1dir={folderName}\Section1 --section2dir={folderName}\Section2 {plaintextOutput} {headerOutput} {onlyUpdatedOutput} {InputFile.Text}";
                         //MessageBox.Show(args);
 
