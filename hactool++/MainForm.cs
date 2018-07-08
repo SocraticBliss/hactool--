@@ -60,14 +60,36 @@ namespace hactool__
 
                 StreamReader myStreamReader = process.StandardError;
                 string error = myStreamReader.ReadLine();
-                
-                /// Section 0 Corrupted!
-                if (error.Contains("corrupted"))
+
+                if (error != null)
                 {
-                    if (procStartInfo.Arguments.Contains("titlekey="))
-                        MessageBox.Show($@"hactool.exe {error}{NewLine}{NewLine}Try another titlekey?", @"¯\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    else
-                        MessageBox.Show($@"hactool.exe {error}{NewLine}{NewLine}Did you forget your titlekey?", @"¯\_(ツ)_/¯", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //MessageBox.Show(error);
+
+                    switch (error)
+                    {
+                        case "hactool (c) SciresM.":
+                            break;
+
+                        /// Error: section 0 is corrupted!
+                        case "Error: section 0 is corrupted!":
+                            if (procStartInfo.Arguments.Contains("titlekey="))
+                                MessageBox.Show($@"{error}{NewLine}{NewLine}Hint: Try another titlekey?", @"hactool.exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            else
+                                MessageBox.Show($@"{error}{NewLine}{NewLine}Hint: Enter a titlekey?", @"hactool.exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+
+                        /// Error: section 1 is corrupted!
+                        case "Error: section 1 is corrupted!":
+                            if (procStartInfo.Arguments.Contains("titlekey="))
+                                MessageBox.Show($@"{error}{NewLine}{NewLine}Hint: Try another titlekey?", @"hactool.exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            else
+                                MessageBox.Show($@"{error}{NewLine}{NewLine}Hint: Enter a titlekey?", @"hactool.exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+
+                        default:
+                            MessageBox.Show($@"{error}", @"hactool.exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                    }
                 }
                 process.WaitForExit();
             }

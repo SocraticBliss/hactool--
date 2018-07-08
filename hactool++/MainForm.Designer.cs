@@ -148,7 +148,7 @@
             // 
             // Open
             // 
-            this.Open.AccessibleDescription = "Click = Opens a File Dialog, Shift+Click =  Opens a folder Folder Dialog";
+            this.Open.AccessibleDescription = "Click = Opens a File Dialog, Shift+Click = Opens a folder Folder Dialog";
             this.Open.AccessibleName = "OpenFileorFolder";
             this.Open.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.Open.FlatAppearance.BorderSize = 0;
@@ -210,7 +210,7 @@
             this.OpenFileDialog.DefaultExt = "nca";
             this.OpenFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath;
             this.OpenFileDialog.Filter = "Switch Files|*.nca;*.xci;*.nsp";
-            this.OpenFileDialog.Title = "Select a File...";
+            this.OpenFileDialog.Title = "Select a Switch File to unpack...";
             // 
             // OpenKeysDialog
             // 
