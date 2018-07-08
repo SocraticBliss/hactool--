@@ -1,5 +1,5 @@
-# hactool-- SocraticBliss
-hactool C# GUI
+# hactool++
+hactool C# GUI by SocraticBliss
 
 Usage:
 
