@@ -190,7 +190,6 @@
             this.Start.AccessibleDescription = "Start the un-packing process";
             this.Start.AccessibleName = "Start";
             this.Start.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.Start.Enabled = false;
             this.Start.FlatAppearance.BorderSize = 0;
             this.Start.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkGray;
             this.Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -208,15 +207,15 @@
             // OpenFileDialog
             // 
             this.OpenFileDialog.DefaultExt = "nca";
-            this.OpenFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath;
             this.OpenFileDialog.Filter = "Switch Files|*.nca;*.xci;*.nsp";
-            this.OpenFileDialog.Title = "Select a Switch File to unpack...";
+            this.OpenFileDialog.InitialDirectory = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE";
+            this.OpenFileDialog.Title = "Select a Switch File...";
             // 
             // OpenKeysDialog
             // 
             this.OpenKeysDialog.DefaultExt = "keys";
-            this.OpenKeysDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath;
             this.OpenKeysDialog.Filter = "Keys File|*.keys;*.txt|All Files (*.*)|*.*";
+            this.OpenKeysDialog.InitialDirectory = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE";
             this.OpenKeysDialog.Title = "Select a Keys File...";
             // 
             // OpenFolderDialog

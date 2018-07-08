@@ -44,8 +44,8 @@ namespace hactool__
         {
             ProcessStartInfo procStartInfo = new ProcessStartInfo
             {
-                FileName = "hactool.exe",
-                Arguments = args,
+                FileName = "cmd.exe",
+                Arguments = $@" /C {args}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -125,7 +125,7 @@ namespace hactool__
                     Directory.CreateDirectory(folderName);
 
                     /// Extract the NCA files...
-                    args = $@" {keyFile} {titleKey} --section0dir={folderName}\Section0 --section1dir={folderName}\Section1 --section2dir={folderName}\Section2 {fileName}";
+                    args = $@"hactool.exe {keyFile} {titleKey} --section0dir={folderName}\Section0 --section1dir={folderName}\Section1 --section2dir={folderName}\Section2 {fileName}";
                     //MessageBox.Show(args);
 
                     RunHactool($@"{args}");
@@ -134,7 +134,7 @@ namespace hactool__
                     npdm = $@"{folderName}\Section0\main.npdm";
                     if (File.Exists(npdm))
                     {
-                        args = $@" {keyFile} --intype=npdm {npdm} >{npdm}.txt";
+                        args = $@"hactool.exe {keyFile} {titleKey} --intype=npdm {npdm} >{npdm}.txt";
                         //MessageBox.Show(args);
 
                         RunHactool($@"{args}");
@@ -176,7 +176,7 @@ namespace hactool__
                 {
                     case ".nsp":
                         extension = "NSP";
-                        args = $@" {keyFile} --intype=pfs0 --outdir={folderName} {InputFile.Text}";
+                        args = $@"hactool.exe {keyFile} --intype=pfs0 --outdir={folderName} {InputFile.Text}";
                         //MessageBox.Show(args);
 
                         RunHactool($@"{args}");
@@ -184,7 +184,7 @@ namespace hactool__
 
                     case ".xci":
                         extension = "XCI";
-                        args = $@" {keyFile} --intype=xci --outdir={folderName} {InputFile.Text}";
+                        args = $@"hactool.exe {keyFile} --intype=xci --outdir={folderName} {InputFile.Text}";
                         //MessageBox.Show(args);
 
                         RunHactool($@"{args}");
@@ -193,18 +193,19 @@ namespace hactool__
                     case ".nca":
                     default:
                         extension = "NCA";
-                        args = $@" {keyFile} {titleKey} --section0dir={folderName}\Section0 --section1dir={folderName}\Section1 --section2dir={folderName}\Section2 {plaintextOutput} {headerOutput} {onlyUpdatedOutput} {InputFile.Text}";
+                        args = $@"hactool.exe {keyFile} {titleKey} --section0dir={folderName}\Section0 --section1dir={folderName}\Section1 --section2dir={folderName}\Section2 {plaintextOutput} {headerOutput} {onlyUpdatedOutput} {InputFile.Text}";
                         //MessageBox.Show(args);
 
                         RunHactool($@"{args}");
-
+                        
                         /* Waiting for hactool.exe with the latest patches...
-                         * --json={1}.txt
-                         */
+                         * --json={npdm}.txt*/
+                        
+                        /// Extract any npdm files...
                         npdm = $@"{folderName}\Section0\main.npdm";
                         if (File.Exists(npdm))
                         {
-                            args = $@" {keyFile} --intype=npdm {npdm} >{npdm}.txt";
+                            args = $@"hactool.exe {keyFile} {titleKey} --intype=npdm {npdm} >{npdm}.txt";
                             //MessageBox.Show(args);
 
                             RunHactool($@"{args}");
@@ -243,7 +244,6 @@ namespace hactool__
                 {
                     // Populate the Textbox with the folder
                     InputFile.Text = OpenFolderDialog.SelectedPath;
-                    Start.Enabled = true;
                     bulkUnpack = true;
 
                     // Output Options? No
@@ -287,7 +287,6 @@ namespace hactool__
                             break;
                     }
 
-                    Start.Enabled = true;
                     bulkUnpack = false;
                 }
             }
